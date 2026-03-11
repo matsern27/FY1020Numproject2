@@ -1,4 +1,3 @@
-
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import minimize
@@ -321,13 +320,22 @@ def plot_strain_distribution(stretch_factors=[0.0, 0.0001, 0.01, 0.05, 0.1, 0.3,
         new_max_x, new_max_y = xy_def[:, 0].max(), xy_def[:, 1].max()
         epsilon_x = (new_max_x - x0) / x0
         epsilon_y = (new_max_y - y0) / y0
+        Fn = K * (Lx_plate - xy_def[ids_right, 0]).sum()
 
         if task6:
-            print(f" L : {Lx_plate:.4f} m")
-            if abs(epsilon_x) < 1e-14:
-                print("ratio change: undefined (epsilon_x ≈ 0)\n")
-            else:
-                print(f"ratio change: {epsilon_y / epsilon_x:.4f}", end="\n\n")
+
+            Lx = xy_def[ids_right, 0].mean() - xy_def[ids_left, 0].mean()
+            Ly = xy_def[:, 1].max() - xy_def[:, 1].min()
+
+            Ly0 = nodes_ref[:, 1].max() - nodes_ref[:, 1].min()
+
+            epsilon_n = (Lx - Lx0) / Lx0
+            Fn = K * (Lx_plate - xy_def[ids_right, 0]).sum()
+            sigma_n = Fn / (Ly0 * 1.0)   # B = 1 m
+
+            if abs(epsilon_n) > 1e-14:
+                E_measured = sigma_n / epsilon_n
+                print(f"f = {f:.4f} | E = {E_measured:.2f} N/m² | ν = {-epsilon_y/epsilon_x:.4f}")
 
     return epsilon_y /epsilon_x
 
