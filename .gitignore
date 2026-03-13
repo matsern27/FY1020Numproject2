@@ -3,7 +3,7 @@
 
 
 # local important files
-/__pycash__/*
-/__pycash__
+/__pycache__/*
+/__pycache__
 
 /.vscode
